@@ -11,11 +11,38 @@ main {
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    background-image: url('https://source.unsplash.com/random/1600x900/?mountain');
-    background-size: cover;
 }
 
 main * {
-    background-color: #20212470;
     color: #fff;
+    font-family:  'Space Grotesk', sans-serif;
+    text-align: center;
+    max-width: 50vw;
+}
+
+button {
+    background-color: rgba(69, 62, 62, 0.348);
+    border: none;
+    padding: 0.5em 1em;
+}
+
+button:hover {
+    background-color: rgba(69, 62, 62, 0.641);
+}
+
+.fade-in {
+	opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 1s;
+}
+
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
