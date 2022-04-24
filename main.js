@@ -50,12 +50,13 @@ function getTask() {
     .then(res => res.json()) // parse response as JSON
     .then(result => {
         const todo = result[0]
+        const doneButton = document.querySelector('#done')
+
         if (todo) {
             document.querySelector('h1').innerText = todo.content
             document.querySelector('p').innerText = todo.description
             document.querySelector('#done').innerText = 'done!'
 
-            let doneButton = document.querySelector('#done')
             doneButton.addEventListener('click', closeTaskAndRefresh)
             
             localStorage.taskID = todo.id
@@ -63,6 +64,8 @@ function getTask() {
         } else {
             document.querySelector('h1').innerText = 'Done! Great job.'
             document.querySelector('#done').innerText = 'I\'\m ready for something else'
+
+            doneButton.addEventListener('click', addTaskAndRefresh)
         }
     })
     .catch(err => {
@@ -80,20 +83,61 @@ function closeTaskAndRefresh() {
     }
 
     var myHeaders = new Headers();
-    myHeaders.append(`Authorization`, `Bearer ${localStorage.apiKey}`);
-    myHeaders.append("Cookie", "csrf=1f2f45cf3e044886ad54d4bc5eca773d");
+        myHeaders.append(`Authorization`, `Bearer ${localStorage.apiKey}`);
+        myHeaders.append("Cookie", "csrf=1f2f45cf3e044886ad54d4bc5eca773d");
 
     var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    redirect: 'follow'
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
     };
 
     let url = `https://api.todoist.com/rest/v1/tasks/${localStorage.taskID}/close`
 
     fetch(url, requestOptions)
-    .then(response => response.text())
-    .then(result => location = location)
-    .catch(error => console.log('error', error));
+        .then(response => response.text())
+        .then(result => location = location)
+        .catch(error => console.log('error', error));
 
+}
+
+function addTaskAndRefresh() {
+    
+    let apiKey
+    // let contentInput = document.createElement('input')
+    // contentInput.type = text
+    // document.main.appendChild(contentInput)
+    // console.log(contentInput)
+    // let taskContent = document.querySelector('contentInput').value
+
+    if (!localStorage.getItem('apiKey')) {
+        apiKey = prompt('Please enter your Todoist API token')
+        localStorage.setItem('apiKey', apiKey);
+    }
+
+    var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("X-Request-Id", "$(uuidgen)");
+        myHeaders.append("Authorization", `Bearer ${localStorage.apiKey}`);
+        myHeaders.append("Cookie", "csrf=1f2f45cf3e044886ad54d4bc5eca773d");
+
+    var raw = JSON.stringify({
+        "content": taskContent,
+        "due_string": "today",
+        "due_lang": "en",
+        "priority": 4,
+        "project_id": localStorage.projectID
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch("https://api.todoist.com/rest/v1/tasks", requestOptions)
+        .then(response => response.json())
+        .then(result => location = location)
+        .catch(error => console.log('error', error));
 }
