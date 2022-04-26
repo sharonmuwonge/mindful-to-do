@@ -65,7 +65,7 @@ function getTask() {
             document.querySelector('h1').innerText = 'Done! Great job.'
             document.querySelector('#done').innerText = 'I\'\m ready for something else'
 
-            doneButton.addEventListener('click', addTaskAndRefresh)
+            doneButton.addEventListener('click', addForm)
         }
     })
     .catch(err => {
@@ -101,14 +101,28 @@ function closeTaskAndRefresh() {
 
 }
 
-function addTaskAndRefresh() {
+function addForm() {
+
+    let main = document.querySelector('main')
     
+    let taskForm = document.createElement('form')
+    main.appendChild(taskForm)
+
+    let contentInput = document.createElement('input')
+    contentInput.type = 'text'
+    taskForm.appendChild(contentInput)
+
+    let addButton = document.createElement('button')
+    addButton.innerText = 'add'
+    taskForm.appendChild(addButton)
+
+    taskForm.addEventListener('submit', addTaskAndRefresh)
+}
+
+function addTaskAndRefresh() {
+
     let apiKey
-    // let contentInput = document.createElement('input')
-    // contentInput.type = text
-    // document.main.appendChild(contentInput)
-    // console.log(contentInput)
-    // let taskContent = document.querySelector('contentInput').value
+    let taskContent = document.querySelector('contentInput').value
 
     if (!localStorage.getItem('apiKey')) {
         apiKey = prompt('Please enter your Todoist API token')
@@ -138,6 +152,7 @@ function addTaskAndRefresh() {
 
     fetch("https://api.todoist.com/rest/v1/tasks", requestOptions)
         .then(response => response.json())
-        .then(result => location = location)
+        .then(result => console.log(result))
         .catch(error => console.log('error', error));
+
 }
