@@ -106,10 +106,12 @@ function addForm() {
     let main = document.querySelector('main')
     
     let taskForm = document.createElement('form')
+    taskForm.setAttribute('onSubmit', 'addTaskAndRefresh; return false')
     main.appendChild(taskForm)
 
     let contentInput = document.createElement('input')
     contentInput.type = 'text'
+    contentInput.id = 'contentInput'
     taskForm.appendChild(contentInput)
 
     let addButton = document.createElement('button')
@@ -122,14 +124,14 @@ function addForm() {
 function addTaskAndRefresh() {
 
     let apiKey
-    let taskContent = document.querySelector('contentInput').value
-
+    let taskContent = document.getElementById('contentInput').value
+    
     if (!localStorage.getItem('apiKey')) {
         apiKey = prompt('Please enter your Todoist API token')
         localStorage.setItem('apiKey', apiKey);
-    }
+    } else {
 
-    var myHeaders = new Headers();
+        var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("X-Request-Id", "$(uuidgen)");
         myHeaders.append("Authorization", `Bearer ${localStorage.apiKey}`);
@@ -152,7 +154,9 @@ function addTaskAndRefresh() {
 
     fetch("https://api.todoist.com/rest/v1/tasks", requestOptions)
         .then(response => response.json())
-        .then(result => console.log(result))
+        .then(result => location = location)
         .catch(error => console.log('error', error));
+
+    }
 
 }
